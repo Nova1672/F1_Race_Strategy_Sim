@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #0B0B0E;
+    color: #FFFFFF;
+    font-family: 'Helvetica Neue', system-ui, -apple-system, sans-serif;
+  }
+}
+
+.bento-card {
+  background-color: #15151B;
+  border: 1px solid #2D2D37;
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
+}
+
+.bento-card-red {
+  border-top: 3px solid #E10600;
+}
+
+.f1-red {
+  color: #E10600;
+}
+
+.f1-bg-red {
+  background-color: #E10600;
+}
+
+.f1-border-red {
+  border-color: #E10600;
+}
+
+.label-caps {
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #8E9299;
+}
+
+.metric-value {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.tyre-soft {
+  color: #FF1E1E;
+}
+
+.tyre-medium {
+  color: #F8FF2C;
+}
+
+.tyre-hard {
+  color: #FFFFFF;
+}
+
+/* Custom scrollbars for bento grid */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0B0B0E;
+}
+::-webkit-scrollbar-thumb {
+  background: #2D2D37;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8E9299;
+}

@@ -1,0 +1,6 @@
+{
+  "name": "F1 Race Strategy Intelligence Platform",
+  "description": "Enterprise F1 Telemetry, Race Strategy, Tyre Degradation & Predictive AI Intelligence Platform",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
