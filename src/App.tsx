@@ -7,9 +7,7 @@ import { Header } from './components/Header';
 import { StrategyWall } from './components/StrategyWall';
 import { TelemetryAnalytics } from './components/TelemetryAnalytics';
 import { TyreDegradationMatrix } from './components/TyreDegradationMatrix';
-import { PitWindowSimulator } from './components/PitWindowSimulator';
 import { AiRaceCopilot } from './components/AiRaceCopilot';
-import { MonteCarloModal } from './components/MonteCarloModal';
 
 export function App() {
   const [tracks] = useState<TrackCircuit[]>(F1_TRACKS);
@@ -24,7 +22,6 @@ export function App() {
   const [activeScreen, setActiveScreen] = useState<string>('screen-1');
   const [copilotPrompt, setCopilotPrompt] = useState<string>('');
   const [voiceActive, setVoiceActive] = useState<boolean>(false);
-  const [isMonteCarloOpen, setIsMonteCarloOpen] = useState<boolean>(false);
   const [raceLogs, setRaceLogs] = useState<LiveRaceEventLog[]>([]);
 
   // Track switch handler - resets race simulation for newly chosen track
@@ -305,7 +302,7 @@ export function App() {
 
   const handleSwitchToCopilotWithPrompt = (promptText: string) => {
     setCopilotPrompt(promptText);
-    setActiveScreen('screen-5');
+    setActiveScreen('screen-4');
   };
 
   return (
@@ -323,7 +320,6 @@ export function App() {
         onResetSim={handleResetSim}
         activeScreen={activeScreen}
         onSelectScreen={setActiveScreen}
-        onOpenMonteCarlo={() => setIsMonteCarloOpen(true)}
         voiceActive={voiceActive}
         onToggleVoice={() => setVoiceActive(!voiceActive)}
       />
@@ -351,22 +347,12 @@ export function App() {
           <TyreDegradationMatrix
             drivers={drivers}
             selectedDriver={selectedDriver}
+            onSelectDriver={setSelectedDriver}
             track={selectedTrack}
           />
         )}
 
         {activeScreen === 'screen-4' && (
-          <PitWindowSimulator
-            selectedDriver={selectedDriver}
-            drivers={drivers}
-            track={selectedTrack}
-            currentLap={currentLap}
-            scenarios={pitScenarios}
-            onTriggerQuickPit={handleQuickPit}
-          />
-        )}
-
-        {activeScreen === 'screen-5' && (
           <AiRaceCopilot
             selectedDriver={selectedDriver}
             selectedTrack={selectedTrack}
@@ -377,13 +363,6 @@ export function App() {
           />
         )}
       </main>
-
-      {/* Monte Carlo Simulator Modal */}
-      <MonteCarloModal
-        isOpen={isMonteCarloOpen}
-        onClose={() => setIsMonteCarloOpen(false)}
-        track={selectedTrack}
-      />
     </div>
   );
 }

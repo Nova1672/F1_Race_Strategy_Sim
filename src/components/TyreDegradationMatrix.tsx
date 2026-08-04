@@ -8,9 +8,10 @@ interface TyreDegradationMatrixProps {
   drivers: DriverTelemetry[];
   selectedDriver: DriverTelemetry;
   track: TrackCircuit;
+  onSelectDriver?: (driver: DriverTelemetry) => void;
 }
 
-export const TyreDegradationMatrix: React.FC<TyreDegradationMatrixProps> = ({ drivers, selectedDriver, track }) => {
+export const TyreDegradationMatrix: React.FC<TyreDegradationMatrixProps> = ({ drivers, selectedDriver, track, onSelectDriver }) => {
   const degData = useMemo(() => {
     return generateTyreDegradationData(35, track.tyreAbrasionIndex, track.trackTemp);
   }, [track]);
@@ -148,7 +149,8 @@ export const TyreDegradationMatrix: React.FC<TyreDegradationMatrixProps> = ({ dr
             return (
               <div
                 key={drv.driverCode}
-                className={`p-4 rounded-xl border transition-all ${
+                onClick={() => onSelectDriver?.(drv)}
+                className={`p-4 rounded-xl border transition-all cursor-pointer ${
                   isFocus
                     ? 'bg-[#0B0B0E] border-[#E10600] shadow-lg'
                     : 'bg-[#0B0B0E]/80 border-[#2D2D37] hover:border-zinc-700'

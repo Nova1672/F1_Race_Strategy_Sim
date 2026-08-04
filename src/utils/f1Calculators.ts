@@ -46,6 +46,10 @@ export function generateTelemetryTraceData(
   const trackLength = track ? track.lengthKm * 1000 : 5891; // Meters
   const step = 50; // Every 50 meters
 
+  // Driver codes seed to vary style slightly per driver pair
+  const d1Seed = (driver1Code.charCodeAt(0) * 7) % 15;
+  const d2Seed = (driver2Code.charCodeAt(0) * 11) % 15;
+
   for (let dist = 0; dist <= trackLength; dist += step) {
     let cornerName: string | undefined = undefined;
     const trackId = track?.id || 'silverstone';
@@ -91,31 +95,31 @@ export function generateTelemetryTraceData(
     let d2Gear = 8;
     let d2Drs = 0;
 
-    // Corner braking zones
+    // Corner braking zones with progressive smooth pedal traces
     if (cornerName) {
       if (cornerName.includes('Hairpin') || cornerName.includes('La Source') || cornerName.includes('Rettifilo')) {
         baseSpeed = 75 + 15 * Math.cos(dist / 40);
-        d1Throttle = 15;
-        d1Brake = 85;
+        d1Throttle = 20 + Math.max(0, Math.sin(dist / 30) * 30);
+        d1Brake = 85 - Math.min(60, (dist % 100) * 0.5);
         d1Gear = 1;
-        d2Throttle = 20;
-        d2Brake = 75;
+        d2Throttle = 25 + Math.max(0, Math.cos(dist / 30) * 25);
+        d2Brake = 80 - Math.min(55, (dist % 100) * 0.45);
         d2Gear = 2;
       } else if (cornerName.includes('Eau Rouge') || cornerName.includes('Copse') || cornerName.includes('Parabolica')) {
         baseSpeed = 265 + 20 * Math.sin(dist / 120);
-        d1Throttle = 92;
+        d1Throttle = 92 + Math.sin(dist / 50) * 8;
         d1Brake = 5;
         d1Gear = 7;
-        d2Throttle = 96;
+        d2Throttle = 96 + Math.cos(dist / 50) * 4;
         d2Brake = 0;
         d2Gear = 7;
       } else {
         baseSpeed = 160 + 25 * Math.sin(dist / 70);
-        d1Throttle = 55;
-        d1Brake = 40;
+        d1Throttle = 55 + Math.sin(dist / 40) * 25;
+        d1Brake = 40 - Math.min(30, (dist % 80) * 0.4);
         d1Gear = 4;
-        d2Throttle = 60;
-        d2Brake = 30;
+        d2Throttle = 60 + Math.cos(dist / 40) * 20;
+        d2Brake = 35 - Math.min(25, (dist % 80) * 0.35);
         d2Gear = 4;
       }
     } else {
@@ -125,10 +129,14 @@ export function generateTelemetryTraceData(
         d2Drs = 1;
         baseSpeed += 14;
       }
+      d1Throttle = 100;
+      d2Throttle = 100;
+      d1Brake = 0;
+      d2Brake = 0;
     }
 
-    const d1Speed = Math.round(baseSpeed + (Math.sin(dist / 180) * 3));
-    const d2Speed = Math.round(baseSpeed + (Math.cos(dist / 160) * 4) + 1.2);
+    const d1Speed = Math.round(baseSpeed + (Math.sin(dist / 180 + d1Seed) * 4));
+    const d2Speed = Math.round(baseSpeed + (Math.cos(dist / 160 + d2Seed) * 4) + 1.2);
 
     const delta = (d1Speed - d2Speed) * -0.008;
 
@@ -137,10 +145,10 @@ export function generateTelemetryTraceData(
       cornerName,
       driver1Speed: Math.max(65, d1Speed),
       driver2Speed: Math.max(65, d2Speed),
-      driver1Throttle: Math.min(100, Math.max(0, d1Throttle)),
-      driver2Throttle: Math.min(100, Math.max(0, d2Throttle)),
-      driver1Brake: Math.min(100, Math.max(0, d1Brake)),
-      driver2Brake: Math.min(100, Math.max(0, d2Brake)),
+      driver1Throttle: Math.min(100, Math.max(0, Math.round(d1Throttle))),
+      driver2Throttle: Math.min(100, Math.max(0, Math.round(d2Throttle))),
+      driver1Brake: Math.min(100, Math.max(0, Math.round(d1Brake))),
+      driver2Brake: Math.min(100, Math.max(0, Math.round(d2Brake))),
       driver1Gear: d1Gear,
       driver2Gear: d2Gear,
       driver1Drs: d1Drs,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, Pause, FastForward, RotateCcw, CloudRain, Flame, Radio, Clock, ShieldAlert, Cpu, Sparkles, Layers, Activity, Disc, GitBranch } from 'lucide-react';
+import { Play, Pause, RotateCcw, CloudRain, Flame, Clock, Sparkles, Layers, Activity, Disc, AlertTriangle, ShieldAlert } from 'lucide-react';
 import { TrackCircuit } from '../types';
 
 interface HeaderProps {
@@ -14,9 +14,7 @@ interface HeaderProps {
   onResetSim: () => void;
   activeScreen: string;
   onSelectScreen: (screenId: string) => void;
-  onOpenMonteCarlo: () => void;
-  voiceActive: boolean;
-  onToggleVoice: () => void;
+  raceFlag?: 'GREEN' | 'SC' | 'VSC' | 'YELLOW';
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -31,15 +29,12 @@ export const Header: React.FC<HeaderProps> = ({
   onResetSim,
   activeScreen,
   onSelectScreen,
-  onOpenMonteCarlo,
-  voiceActive,
-  onToggleVoice,
+  raceFlag = 'GREEN',
 }) => {
   const screens = [
     { id: 'screen-1', name: 'Strategy Wall', icon: Layers, badge: 'LIVE' },
     { id: 'screen-2', name: 'Telemetry Analytics', icon: Activity, badge: '10Hz' },
     { id: 'screen-3', name: 'Tyre Deg Matrix', icon: Disc, badge: 'C1-C5' },
-    { id: 'screen-4', name: 'Pit Window Simulator', icon: GitBranch, badge: 'Undercut' },
     { id: 'screen-5', name: 'AI Race Copilot', icon: Sparkles, badge: 'Gemini' },
   ];
 
@@ -57,7 +52,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div>
               <div className="text-xs font-bold uppercase text-zinc-400">INTELLIGENCE PLATFORM</div>
               <div className="text-sm font-black uppercase tracking-tight text-white flex items-center gap-2">
-                RACE STRATEGY VISUALIZER <span className="f1-red text-xs">v1.0</span>
+                RACE STRATEGY VISUALIZER <span className="f1-red text-xs">v2.0</span>
               </div>
             </div>
           </div>
@@ -128,19 +123,23 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
-
-          {/* Monte Carlo Run Button */}
-          <button
-            onClick={onOpenMonteCarlo}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-700/80 text-indigo-300 text-xs font-bold transition-all shadow-sm"
-          >
-            <Cpu className="w-3.5 h-3.5 text-indigo-400" />
-            <span>10K SIM</span>
-          </button>
         </div>
 
-        {/* Live Weather & Track Telemetry Environment */}
+        {/* Live Weather & Track Status Environment */}
         <div className="flex items-center gap-3 text-xs font-mono w-full lg:w-auto justify-end">
+          {raceFlag !== 'GREEN' && (
+            <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded font-bold border animate-pulse ${
+              raceFlag === 'SC'
+                ? 'bg-amber-950 text-amber-300 border-amber-500'
+                : raceFlag === 'VSC'
+                ? 'bg-yellow-950 text-yellow-300 border-yellow-500'
+                : 'bg-orange-950 text-orange-300 border-orange-500'
+            }`}>
+              <ShieldAlert className="w-3.5 h-3.5" />
+              <span>{raceFlag === 'SC' ? 'SAFETY CAR' : raceFlag === 'VSC' ? 'VSC ACTIVE' : 'YELLOW FLAG'}</span>
+            </div>
+          )}
+
           <div className="flex items-center gap-1.5 text-zinc-300 bg-[#0B0B0E] px-2.5 py-1.5 rounded border border-[#2D2D37]">
             <Flame className="w-3.5 h-3.5 text-amber-500" />
             <span className="label-caps">TRACK:</span>
@@ -149,23 +148,9 @@ export const Header: React.FC<HeaderProps> = ({
 
           <div className="flex items-center gap-1.5 text-zinc-300 bg-[#0B0B0E] px-2.5 py-1.5 rounded border border-[#2D2D37]">
             <CloudRain className="w-3.5 h-3.5 text-cyan-400" />
-            <span className="label-caps">RAIN:</span>
-            <span className="text-cyan-300 font-bold">{selectedTrack.rainIntensityPercent}%</span>
+            <span className="label-caps">CONDITION:</span>
+            <span className="text-cyan-300 font-bold">{selectedTrack.trackCondition || 'Dry'}</span>
           </div>
-
-          {/* Audio Voice Control Toggle */}
-          <button
-            onClick={onToggleVoice}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded border text-xs font-bold transition-all ${
-              voiceActive
-                ? 'bg-emerald-950 text-emerald-300 border-emerald-600 animate-pulse'
-                : 'bg-[#0B0B0E] text-zinc-300 border-[#2D2D37] hover:bg-zinc-900'
-            }`}
-            title="Toggle Voice Synthesizer / Audio Directives"
-          >
-            <Radio className={`w-3.5 h-3.5 ${voiceActive ? 'text-emerald-400' : 'text-zinc-400'}`} />
-            <span>{voiceActive ? 'RADIO ON' : 'RADIO OFF'}</span>
-          </button>
         </div>
       </div>
 

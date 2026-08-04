@@ -40,8 +40,8 @@ export const StrategyWall: React.FC<StrategyWallProps> = ({
         </div>
 
         <div className="bento-card flex flex-col justify-between">
-          <div className="label-caps mb-1">Optimal Pit Window</div>
-          <div className="metric-value italic text-white">L18 – L28</div>
+          <div className="label-caps mb-1">Dynamic Pit Window</div>
+          <div className="metric-value italic text-white">L{Math.max(12, Math.round(track.totalLaps * 0.35))} – L{Math.min(track.totalLaps - 5, Math.round(track.totalLaps * 0.55))}</div>
           <div className="text-[10px] text-emerald-400 font-bold mt-1">CIRCUIT: {track.name}</div>
         </div>
 
@@ -122,7 +122,7 @@ export const StrategyWall: React.FC<StrategyWallProps> = ({
                   <th className="py-2.5 px-3">POS</th>
                   <th className="py-2.5 px-3">DRIVER</th>
                   <th className="py-2.5 px-3 text-right">GAP / INTERVAL</th>
-                  <th className="py-2.5 px-3 text-center">TYRE & AGE</th>
+                  <th className="py-2.5 px-3 text-center">TYRE COMPOUND</th>
                   <th className="py-2.5 px-3 text-center">WEAR</th>
                   <th className="py-2.5 px-3 text-center">REJOIN POS</th>
                   <th className="py-2.5 px-3 text-center">PIT WINDOW</th>
@@ -207,11 +207,11 @@ export const StrategyWall: React.FC<StrategyWallProps> = ({
                         </div>
                       </td>
 
-                      {/* TYRE & AGE */}
+                      {/* TYRE COMPOUND */}
                       <td className="py-2.5 px-3 text-center">
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-[#0B0B0E] text-slate-200 border border-[#2D2D37]">
                           <Disc className="w-3 h-3 text-amber-400" />
-                          {drv.tyre.compound.split(' ')[0]} ({drv.tyre.ageLaps}L)
+                          {drv.tyre.compound.split(' ')[0]}
                         </span>
                       </td>
 
